@@ -2,13 +2,23 @@ package igor32648.com.github.forum.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class Answer {
 
-    private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
     private String message;
+    @ManyToOne
     private Topic topic;
     private LocalDateTime creationDate = LocalDateTime.now();
-    private User author;
+    @ManyToOne
+    private Student author;
     private Boolean solution = false;
 
     @Override
@@ -98,11 +108,11 @@ public class Answer {
         this.creationDate = creationDate;
     }
 
-    public User getAuthor() {
+    public Student getAuthor() {
         return author;
     }
 
-    public void setAuthor(User author) {
+    public void setAuthor(Student author) {
         this.author = author;
     }
 

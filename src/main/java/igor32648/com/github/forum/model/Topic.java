@@ -4,23 +4,48 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+@Entity
 public class Topic {
 
-    private Long id;
+	
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
     private String title;
     private String message;
     private LocalDateTime creationDate = LocalDateTime.now();
+    @Enumerated(EnumType.STRING)
     private TopicStatus status = TopicStatus.UNANSWERED;
-    private User author;
+    @ManyToOne
+    private Student student;
+    @ManyToOne
     private Course course;
+    @OneToMany(mappedBy = "topic")
     private List<Answer> answers = new ArrayList<>();
 
-    @Override
+   
+
+	public Topic(String title, String message, Course course) {
+		super();
+		this.title = title;
+		this.message = message;
+		this.course = course;
+	}
+
+	@Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((answers == null) ? 0 : answers.hashCode());
-        result = prime * result + ((author == null) ? 0 : author.hashCode());
+        result = prime * result + ((student == null) ? 0 : student.hashCode());
         result = prime * result + ((course == null) ? 0 : course.hashCode());
         result = prime * result + ((creationDate == null) ? 0 : creationDate.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
@@ -44,10 +69,10 @@ public class Topic {
                 return false;
         } else if (!answers.equals(other.answers))
             return false;
-        if (author == null) {
-            if (other.author != null)
+        if (student == null) {
+            if (other.student != null)
                 return false;
-        } else if (!author.equals(other.author))
+        } else if (!student.equals(other.student))
             return false;
         if (course == null) {
             if (other.course != null)
@@ -119,12 +144,12 @@ public class Topic {
         this.status = status;
     }
 
-    public User getAuthor() {
-        return author;
+    public Student getAuthor() {
+        return student;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setAuthor(Student author) {
+        this.student = author;
     }
 
     public Course getCourse() {
