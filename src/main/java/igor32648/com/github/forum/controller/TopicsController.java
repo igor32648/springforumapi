@@ -1,13 +1,18 @@
 package igor32648.com.github.forum.controller;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -38,18 +44,22 @@ public class TopicsController {
 	private CourseRepository courseRepository;
 
 	@GetMapping
-	public List<TopicDto> list(String courseName) {
+	@Cacheable(value = "topicsList")
+	public Page<TopicDto> list(@RequestParam(required = false) String courseName,
+			@PageableDefault(sort = "id", direction = Direction.DESC, page = 0, size = 10) Pageable pagination) {
 		if (courseName == null) {
-			List<Topic> topics = topicRepository.findAll();
+			Page<Topic> topics = topicRepository.findAll(pagination);
 			return TopicDto.convert(topics);
 		} else {
-			List<Topic> topicsByCourseName = topicRepository.findByCourseName(courseName);
+			Page<Topic> topicsByCourseName = topicRepository.findByCourseName(courseName, pagination);
 			return TopicDto.convert(topicsByCourseName);
 		}
 
 	}
 
 	@PostMapping
+	@Transactional
+	@CacheEvict(value = "topicsList", allEntries = true)
 	public ResponseEntity<TopicDto> newTopic(@RequestBody @Valid TopicForm topicForm, UriComponentsBuilder uriBuilder) {
 		Topic newTopic = topicForm.convert(courseRepository);
 		topicRepository.save(newTopic);
@@ -70,6 +80,7 @@ public class TopicsController {
 
 	@PutMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "topicsList", allEntries = true)
 	public ResponseEntity<TopicDto> updateTopic(@PathVariable Long id,
 			@RequestBody @Valid UpdateTopicForm updateTopicForm) {
 		Optional<Topic> optional = topicRepository.findById(id);
@@ -82,6 +93,7 @@ public class TopicsController {
 
 	@DeleteMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "topicsList", allEntries = true)
 	public ResponseEntity<?> deleteTopic(@PathVariable Long id) {
 		Optional<Topic> optional = topicRepository.findById(id);
 		if (optional.isPresent()) {
