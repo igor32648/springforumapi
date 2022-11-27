@@ -14,13 +14,6 @@ public class Course {
     private String name;
     private String category;
 
-    
-    
-    public Course(String name) {
-		super();
-		this.name = name;
-	}
-
 	@Override
     public int hashCode() {
         final int prime = 31;
@@ -57,8 +50,13 @@ public class Course {
             return false;
         return true;
     }
+    
 
-    public Long getId() {
+    public Course() {
+		super();
+	}
+
+	public Long getId() {
         return id;
     }
 
