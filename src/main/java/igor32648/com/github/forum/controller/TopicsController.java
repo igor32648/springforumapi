@@ -27,8 +27,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import igor32648.com.github.forum.controller.dto.DetailedTopicDto;
 import igor32648.com.github.forum.controller.dto.TopicDto;
-import igor32648.com.github.forum.controller.dto.TopicForm;
-import igor32648.com.github.forum.controller.dto.UpdateTopicForm;
+import igor32648.com.github.forum.controller.form.TopicForm;
+import igor32648.com.github.forum.controller.form.UpdateTopicForm;
 import igor32648.com.github.forum.model.Topic;
 import igor32648.com.github.forum.repository.CourseRepository;
 import igor32648.com.github.forum.repository.TopicRepository;

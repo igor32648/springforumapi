@@ -1,4 +1,4 @@
-package igor32648.com.github.forum.controller.dto;
+package igor32648.com.github.forum.controller.form;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
